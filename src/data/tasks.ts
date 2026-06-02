@@ -1,6 +1,6 @@
 // ============================================================
 //  src/data/tasks.ts
-//  Seed data — mirrors the rows shown in the reference image.
+//  Dummy records for testing.
 //  Dates are kept relative to today so the tracker always
 //  renders realistically on any run date.
 // ============================================================
@@ -17,7 +17,7 @@ const offsetDate = (days: number): string => {
   return d.toISOString().split("T")[0]!; // "YYYY-MM-DD"
 };
 
-// ── Seed tasks (8 rows matching the reference image) ────────
+// ── Dummy records ────────
 export const seedTasks: Task[] = [
   {
     id: "task-001",
@@ -37,23 +37,23 @@ export const seedTasks: Task[] = [
   },
   {
     id: "task-003",
-    task: "Update website content",
+    task: "Document detailed business requirements",
     dueDate: offsetDate(0),           // due today
     priority: "Medium",
-    notes: "New blog post",
+    notes: "Gather input from stakeholders",
     status: "Not started",
   },
   {
     id: "task-004",
-    task: "Client follow-up call",
+    task: "Set up new Development & Production Environments",
     dueDate: offsetDate(4),
     priority: "Low",
-    notes: "Follow-up on proposal",
+    notes: "Follow-up with Johnson",
     status: "In progress",
   },
   {
     id: "task-005",
-    task: "Design marketing flyer",
+    task: "Design application",
     dueDate: offsetDate(9),
     priority: "Medium",
     notes: "Use new branding assets",
@@ -61,26 +61,26 @@ export const seedTasks: Task[] = [
   },
   {
     id: "task-006",
-    task: "Invoice reconciliation",
+    task: "Migrate data from legacy system",
     dueDate: offsetDate(3),
     priority: "High",
-    notes: "Verify all payments",
+    notes: "Verify all records",
     status: "In progress",
   },
   {
     id: "task-007",
-    task: "Research new software tools",
+    task: "Implement calculations",
     dueDate: offsetDate(4),
     priority: "Medium",
-    notes: "Research top 3 tools",
+    notes: "57 calculated accounts in total",
     status: "Not started",
   },
   {
     id: "task-008",
-    task: "Quarterly budget review",
+    task: "Demo user interface to business team",
     dueDate: offsetDate(6),
     priority: "High",
-    notes: "Present to CFO",
+    notes: "Schedule meeting with stakeholders",
     status: "In progress",
   },
 ];
