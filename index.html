@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Tracker</title>
+    <link rel="stylesheet" href="/src/styles/main.css" />
+</head>
+
+<body>
+    <div id="app">
+        <!-- ───────────── HEADER ───────────── -->
+        <header>
+            <h1 class="app-title"> PROJECT TASK TRACKER</h1>
+        </header>
+        
+        <!-- ───────────── SUMMARY CARDS ───────────── -->
+        <section id="summary" class="summary-grid" aria-label="Task summary">
+            <div class="summary-card">
+                <span class="summary-label">TOTAL TASKS</span>
+                <span class="summary-value" id="total-tasks">0</span>
+            </div>
+            <div class="summary-card">
+                <span class="summary-label">DUE TODAY</span>
+                <span class="summary-value" id="due-today">0</span>
+            </div>
+            <div class="summary-card">
+                <span class="summary-label">TOTAL PENDING</span>
+                <span class="summary-value" id="total-pending">0</span>
+            </div>
+            <div class="summary-card">
+                <span class="summary-label">OVERDUE</span>
+                <span class="summary-value" id="overdue">0</span>
+            </div>
+            <div class="summary-card">
+                <span class="summary-label">TODAY'S DATE</span>
+                <span class="summary-value" id="todays-date">—</span>
+            </div>
+        </section>
+        <!-- ───────────── CONTROLS ───────────── -->
+        <section class="controls" aria-label="Filter and add tasks">
+            <div class="controls-left">
+        
+                <div class="filter-group">
+                    <label for="filter-status" class="sr-only">Filter by Status</label>
+                    <select id="filter-status" class="control-select" title="Filter by status">
+                        <option value="all">All Statuses</option>
+                        <option value="Not started">Not Started</option>
+                        <option value="In progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-priority" class="sr-only">Filter by Priority</label>
+                    <select id="filter-priority" class="control-select" title="Filter by priority">
+                        <option value="all">All Priorities</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+                        <div class="filter-group search-group">
+                            <label for="search-input" class="sr-only">Search tasks</label>
+                            <input type="text" id="search-input" class="control-input"
+                                          placeholder="Search tasks…"
+              autocomplete="off"
+            />
+          </div>
+
+        </div>
+
+        <div class="controls-right">
+          <button id="btn-add-task" class="btn btn-primary" type="button">
+            + Add Task
+          </button>
+        </div>
+      </section>
+                <!-- ───────────── TASK TABLE ───────────── -->
+                <section class="table-wrapper" aria-label="Task list">
+                    <table id="task-table" role="grid">
+                        <thead>
+                            <tr>
+                                <th class="col-task sortable" data-col="task" scope="col">
+                                    TASK <span class="sort-icon">⇅</span>
+                                </th>
+                                <th class="col-date sortable" data-col="dueDate" scope="col">
+                                    DATE DUE <span class="sort-icon">⇅</span>
+                                </th>
+                                <th class="col-priority sortable" data-col="priority" scope="col">
+                                    PRIORITY <span class="sort-icon">⇅</span>
+                                </th>
+                                <th class="col-notes" scope="col">NOTES</th>
+                                <th class="col-status sortable" data-col="status" scope="col">
+                                    STATUS <span class="sort-icon">⇅</span>
+                                </th>
+                                <th class="col-actions" scope="col">
+                                    <span class="sr-only">Actions</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="task-tbody">
+                            <!-- Rows injected by TypeScript -->
+                        </tbody>
+                    </table>
+                
+                    <p id="empty-state" class="empty-state" hidden>
+                        No tasks match your current filters.
+                    </p>
+                </section>
+                
+                <!-- ───────────── ADD / EDIT MODAL ───────────── -->
+                <div id="task-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+                    <div class="modal-card">
+                
+                        <header class="modal-header">
+                            <h2 id="modal-title" class="modal-title">Add Task</h2>
+                            <button id="modal-close" class="btn-icon" type="button" aria-label="Close modal">✕</button>
+                        </header>
+                
+                        <form id="task-form" class="modal-form" novalidate>
+                
+                            <div class="form-row">
+                                <label for="input-task">Task Name <span class="required">*</span></label>
+                                <input id="input-task" name="task" type="text" class="form-control" placeholder="Enter task name"
+                                    required />
+                                <span class="field-error" id="err-task"></span>
+                            </div>
+                
+                            <div class="form-row">
+                                <label for="input-due-date">Date Due <span class="required">*</span></label>
+                                <input id="input-due-date" name="dueDate" type="date" class="form-control" required />
+                                <span class="field-error" id="err-dueDate"></span>
+                            </div>
+                
+                            <div class="form-row">
+                                <label for="input-priority">Priority <span class="required">*</span></label>
+                                <select id="input-priority" name="priority" class="form-control" required>
+                                    <option value="">— Select —</option>
+                                    <option value="High">High</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Low">Low</option>
+                                </select>
+                                <span class="field-error" id="err-priority"></span>
+                            </div>
+                
+                            <div class="form-row">
+                                <label for="input-status">Status <span class="required">*</span></label>
+                                <select id="input-status" name="status" class="form-control" required>
+                                    <option value="">— Select —</option>
+                                    <option value="Not started">Not Started</option>
+                                    <option value="In progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                </select>
+                                <span class="field-error" id="err-status"></span>
+                            </div>
+                
+                            <div class="form-row">
+                                <label for="input-notes">Notes</label>
+                                <input id="input-notes" name="notes" type="text" class="form-control" placeholder="Optional notes" />
+                            </div>
+                
+                            <div class="modal-footer">
+                                <button type="button" id="btn-cancel" class="btn btn-secondary">Cancel</button>
+                                <button type="submit" id="btn-save" class="btn btn-primary">Save Task</button>
+                            </div>
+                
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- ───────────── DELETE CONFIRM MODAL ───────────── -->
+                <div id="confirm-modal" class="modal-overlay" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title"
+                    hidden>
+                    <div class="modal-card modal-card--sm">
+                        <header class="modal-header">
+                            <h2 id="confirm-title" class="modal-title">Delete Task</h2>
+                        </header>
+                        <p class="confirm-message">
+                            Are you sure you want to delete <strong id="confirm-task-name"></strong>?
+                            This action cannot be undone.
+                        </p>
+                        <div class="modal-footer">
+                            <button type="button" id="confirm-cancel" class="btn btn-secondary">Cancel</button>
+                            <button type="button" id="confirm-delete" class="btn btn-danger">Delete</button>
+                        </div>
+                    </div>
+                </div>
+                
+                </div><!-- /#app -->
+                
+                <script type="module" src="/src/main.ts"></script>
+                </body>
+                
+                </html>

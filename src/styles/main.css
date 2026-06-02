@@ -1,0 +1,906 @@
+/* ============================================================
+   TASK TRACKER main.css
+   Structure:
+   1. CSS Custom Properties (Design Tokens)
+   2. Reset & Base
+   3. Layout / App Shell
+   4. Header
+   5. Summary Cards
+   6. Controls Bar
+   7. Table
+   8. Priority & Status Badges
+   9. Row State Styles (overdue, completed)
+  10. Empty State
+  11. Modal (shared)
+  12. Task Form
+  13. Buttons
+  14. Utilities / Accessibility
+  15. Animations
+  16. Responsive
+   ============================================================ */
+
+
+/* 1. CSS Custom Properties  */
+:root {
+    /* Brand palette */
+    --color-bg: #f4f6f9;
+    --color-surface: #ffffff;
+    --color-border: #d0d7e3;
+    --color-border-light: #e8ecf2;
+
+    --color-text-primary: #1a1f2e;
+    --color-text-secondary: #5a6478;
+    --color-text-muted: #8c96a8;
+
+    /* Accent */
+    --color-accent: #4a6cf7;
+    --color-accent-hover: #3a57d4;
+    --color-accent-light: #eef1fd;
+
+    /* Priority colours */
+    --color-high: #e53e3e;
+    --color-high-bg: #fff5f5;
+    --color-high-badge: #fed7d7;
+
+    --color-medium: #d97706;
+    --color-medium-bg: #fffbeb;
+    --color-medium-badge: #fde68a;
+
+    --color-low: #38a169;
+    --color-low-bg: #f0fff4;
+    --color-low-badge: #c6f6d5;
+
+    /* Status colours */
+    --color-status-inprogress: #3182ce;
+    --color-status-inprogress-bg: #ebf8ff;
+    --color-status-notstarted: #718096;
+    --color-status-notstarted-bg: #f7fafc;
+    --color-status-completed: #38a169;
+    --color-status-completed-bg: #f0fff4;
+
+    /* Overdue */
+    --color-overdue-text: #c53030;
+    --color-overdue-row: #fff5f5;
+
+    /* Danger */
+    --color-danger: #e53e3e;
+    --color-danger-hover: #c53030;
+
+    /* Title gradient */
+    --gradient-title: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+    /* Spacing */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+
+    /* Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+
+    /* Shadow */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, .08), 0 1px 2px rgba(0, 0, 0, .04);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, .10), 0 2px 4px rgba(0, 0, 0, .06);
+    --shadow-lg: 0 10px 30px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);
+
+    /* Typography */
+    --font-sans: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: "Cascadia Code", "Fira Code", "Consolas", monospace;
+
+    /* Transitions */
+    --transition-fast: 120ms ease;
+    --transition-normal: 220ms ease;
+}
+
+
+/* 2. Reset & Base  */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--color-bg);
+    color: var(--color-text-primary);
+    line-height: 1.55;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+ul,
+ol {
+    list-style: none;
+}
+
+button,
+select,
+input {
+    font-family: inherit;
+}
+
+h1,
+h2,
+h3 {
+    line-height: 1.2;
+}
+
+
+/* 3. Layout / App Shell  */
+#app {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-lg) var(--space-lg) var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+
+/* 4. Header  */
+header {
+    text-align: center;
+    padding: var(--space-xl) var(--space-lg);
+    background: var(--color-surface);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-border-light);
+}
+
+.app-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--gradient-title);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    /* Striped texture via repeating-linear-gradient overlay */
+    position: relative;
+    display: inline-block;
+}
+
+.app-title::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(135deg,
+            rgba(255, 255, 255, 0.07) 0px,
+            rgba(255, 255, 255, 0.07) 2px,
+            transparent 2px,
+            transparent 8px);
+    pointer-events: none;
+    border-radius: 2px;
+}
+
+
+/* 5. Summary Cards  */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--space-md);
+}
+
+.summary-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-md) var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.summary-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.summary-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    text-align: center;
+    white-space: nowrap;
+}
+
+.summary-value {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: var(--color-text-primary);
+    line-height: 1;
+}
+
+/* Distinct colour accents per card */
+#summary .summary-card:nth-child(1) .summary-value {
+    color: var(--color-accent);
+}
+
+#summary .summary-card:nth-child(2) .summary-value {
+    color: var(--color-medium);
+}
+
+#summary .summary-card:nth-child(3) .summary-value {
+    color: var(--color-status-inprogress);
+}
+
+#summary .summary-card:nth-child(4) .summary-value {
+    color: var(--color-danger);
+}
+
+#summary .summary-card:nth-child(5) .summary-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.03em;
+}
+
+
+/* 6. Controls Bar  */
+.controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md) var(--space-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.controls-left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+.controls-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-shrink: 0;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+}
+
+.search-group {
+    flex: 1;
+    min-width: 180px;
+}
+
+.control-select,
+.control-input {
+    height: 38px;
+    padding: 0 var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    color: var(--color-text-primary);
+    background: var(--color-surface);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    outline: none;
+}
+
+.control-input {
+    width: 100%;
+    padding-left: var(--space-sm);
+}
+
+.control-select:focus,
+.control-input:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(74, 108, 247, .15);
+}
+
+.control-select {
+    padding-right: var(--space-lg);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235a6478'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    cursor: pointer;
+}
+
+
+/* 7. Table  */
+.table-wrapper {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+#task-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+/* Column widths */
+.col-task {
+    width: 24%;
+}
+
+.col-date {
+    width: 13%;
+}
+
+.col-priority {
+    width: 12%;
+}
+
+.col-notes {
+    width: 28%;
+}
+
+.col-status {
+    width: 13%;
+}
+
+.col-actions {
+    width: 10%;
+}
+
+/* Header */
+#task-table thead tr {
+    background: #f0f2f8;
+    border-bottom: 2px solid var(--color-border);
+}
+
+#task-table th {
+    padding: var(--space-md) var(--space-md);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    text-align: left;
+    white-space: nowrap;
+    user-select: none;
+}
+
+#task-table th.sortable {
+    cursor: pointer;
+    transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+#task-table th.sortable:hover {
+    color: var(--color-accent);
+    background: var(--color-accent-light);
+}
+
+#task-table th.sort-asc .sort-icon::after {
+    content: " �";
+}
+
+#task-table th.sort-desc .sort-icon::after {
+    content: " �";
+}
+
+.sort-icon {
+    opacity: 0.4;
+    font-size: 0.65rem;
+}
+
+#task-table th.sort-asc .sort-icon,
+#task-table th.sort-desc .sort-icon {
+    opacity: 1;
+    color: var(--color-accent);
+}
+
+/* Body rows */
+#task-table tbody tr {
+    border-bottom: 1px solid var(--color-border-light);
+    transition: background var(--transition-fast);
+    animation: fadeInRow 0.25s ease both;
+}
+
+#task-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+#task-table tbody tr:hover {
+    background: var(--color-accent-light);
+}
+
+#task-table td {
+    padding: var(--space-md);
+    font-size: 0.88rem;
+    color: var(--color-text-primary);
+    vertical-align: middle;
+    word-break: break-word;
+}
+
+/* Task name cell */
+td.cell-task {
+    font-weight: 600;
+}
+
+/* Date cell */
+td.cell-date {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--color-text-secondary);
+}
+
+/* Notes cell */
+td.cell-notes {
+    font-size: 0.82rem;
+    color: var(--color-text-secondary);
+    font-style: italic;
+}
+
+/* Actions cell */
+td.cell-actions {
+    text-align: center;
+    white-space: nowrap;
+}
+
+
+/* 8. Priority & Status Badges  */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.73rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+/* Priority */
+.badge-priority-high {
+    background: var(--color-high-badge);
+    color: var(--color-high);
+}
+
+.badge-priority-medium {
+    background: var(--color-medium-badge);
+    color: var(--color-medium);
+}
+
+.badge-priority-low {
+    background: var(--color-low-badge);
+    color: var(--color-low);
+}
+
+/* Status */
+.badge-status-inprogress {
+    background: var(--color-status-inprogress-bg);
+    color: var(--color-status-inprogress);
+}
+
+.badge-status-notstarted {
+    background: var(--color-status-notstarted-bg);
+    color: var(--color-status-notstarted);
+}
+
+.badge-status-completed {
+    background: var(--color-status-completed-bg);
+    color: var(--color-status-completed);
+}
+
+
+/* 9. Row State Styles  */
+
+/* Overdue row */
+tr.row-overdue {
+    background: var(--color-overdue-row);
+}
+
+tr.row-overdue td.cell-task {
+    color: var(--color-overdue-text);
+}
+
+tr.row-overdue td.cell-date {
+    color: var(--color-danger);
+    font-weight: 700;
+}
+
+tr.row-overdue:hover {
+    background: #ffe4e4;
+}
+
+/* Completed row */
+tr.row-completed td.cell-task {
+    text-decoration: line-through;
+    color: var(--color-text-muted);
+}
+
+tr.row-completed {
+    opacity: 0.72;
+}
+
+
+/* 10. Empty State  */
+.empty-state {
+    text-align: center;
+    padding: var(--space-xl) var(--space-lg);
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    font-style: italic;
+}
+
+
+/* 11. Modal (shared)  */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 20, 40, 0.55);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: var(--space-lg);
+    animation: fadeInOverlay 0.18s ease both;
+}
+
+.modal-overlay[hidden] {
+    display: none !important;
+}
+
+.modal-card {
+    background: var(--color-surface);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 500px;
+    animation: slideUpModal 0.22s ease both;
+    overflow: hidden;
+}
+
+.modal-card--sm {
+    max-width: 380px;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-lg) var(--space-lg) var(--space-md);
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.modal-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--color-text-primary);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-lg) var(--space-lg);
+    border-top: 1px solid var(--color-border-light);
+    margin-top: var(--space-md);
+}
+
+.confirm-message {
+    padding: var(--space-lg) var(--space-lg) 0;
+    font-size: 0.92rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+}
+
+
+/* 12. Task Form  */
+.modal-form {
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.form-row label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-secondary);
+}
+
+.required {
+    color: var(--color-danger);
+    margin-left: 2px;
+}
+
+.form-control {
+    height: 40px;
+    padding: 0 var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    color: var(--color-text-primary);
+    background: var(--color-surface);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    outline: none;
+    width: 100%;
+}
+
+.form-control::placeholder {
+    color: var(--color-text-muted);
+}
+
+.form-control:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(74, 108, 247, .15);
+}
+
+.form-control.is-invalid {
+    border-color: var(--color-danger);
+    box-shadow: 0 0 0 3px rgba(229, 62, 62, .12);
+}
+
+.field-error {
+    font-size: 0.75rem;
+    color: var(--color-danger);
+    min-height: 1em;
+}
+
+select.form-control {
+    appearance: none;
+    padding-right: var(--space-xl);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235a6478'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    cursor: pointer;
+}
+
+
+/* 13. Buttons  */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    height: 38px;
+    padding: 0 var(--space-lg);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background var(--transition-fast), transform var(--transition-fast),
+        box-shadow var(--transition-fast);
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+    outline: none;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn:focus-visible {
+    box-shadow: 0 0 0 3px rgba(74, 108, 247, .4);
+}
+
+.btn-primary {
+    background: var(--color-accent);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: var(--color-accent-hover);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary {
+    background: #edf0f7;
+    color: var(--color-text-secondary);
+}
+
+.btn-secondary:hover {
+    background: #dde1ef;
+}
+
+.btn-danger {
+    background: var(--color-danger);
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: var(--color-danger-hover);
+}
+
+/* Icon-only button (modal close) */
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background var(--transition-fast), color var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.btn-icon:hover {
+    background: #f0f2f8;
+    color: var(--color-text-primary);
+}
+
+/* Table row action buttons */
+.btn-edit,
+.btn-delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: background var(--transition-fast), transform var(--transition-fast);
+    background: transparent;
+}
+
+.btn-edit {
+    color: var(--color-accent);
+}
+
+.btn-delete {
+    color: var(--color-danger);
+}
+
+.btn-edit:hover {
+    background: var(--color-accent-light);
+    transform: scale(1.12);
+}
+
+.btn-delete:hover {
+    background: var(--color-high-bg);
+    transform: scale(1.12);
+}
+
+
+/* 14. Utilities / Accessibility  */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+
+/* 15. Animations  */
+@keyframes fadeInRow {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInOverlay {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUpModal {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* 16. Responsive  */
+@media (max-width: 900px) {
+    .summary-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    #task-table th,
+    #task-table td {
+        font-size: 0.78rem;
+        padding: var(--space-sm) var(--space-sm);
+    }
+
+    .col-notes {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    #app {
+        padding: var(--space-md);
+        gap: var(--space-md);
+    }
+
+    .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    #summary .summary-card:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .controls-left {
+        flex-direction: column;
+    }
+
+    .search-group {
+        min-width: unset;
+    }
+
+    .controls-right {
+        justify-content: flex-end;
+    }
+
+    .col-priority {
+        display: none;
+    }
+}
+
