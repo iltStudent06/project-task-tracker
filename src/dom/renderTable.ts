@@ -57,14 +57,14 @@ const buildRowHTML = (task: Task): string => {
           data-id="${id}"
           title="Edit task"
           aria-label="Edit ${escapeHTML(name)}"
-        >Edit </button>
+        > Edit </button>
         <button
           class="btn-delete"
           data-action="delete"
           data-id="${id}"
           title="Delete task"
           aria-label="Delete ${escapeHTML(name)}"
-        > Delete</button>
+        > Delete </button>
                     </td>
     </tr>
   `.trim();
