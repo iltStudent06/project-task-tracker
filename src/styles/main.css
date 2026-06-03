@@ -1,7 +1,7 @@
 /* ============================================================
-   TASK TRACKER main.css
+   PROJECT TASK TRACKER main.css
    Structure:
-   1. CSS Custom Properties (Design Tokens)
+   1. CSS Custom Properties
    2. Reset & Base
    3. Layout / App Shell
    4. Header
@@ -37,7 +37,7 @@
     --color-accent-hover: #3a57d4;
     --color-accent-light: #eef1fd;
 
-    /* Priority colours */
+    /* Priority colors */
     --color-high: #e53e3e;
     --color-high-bg: #fff5f5;
     --color-high-badge: #fed7d7;
@@ -50,7 +50,7 @@
     --color-low-bg: #f0fff4;
     --color-low-badge: #c6f6d5;
 
-    /* Status colours */
+    /* Status colors */
     --color-status-inprogress: #3182ce;
     --color-status-inprogress-bg: #ebf8ff;
     --color-status-notstarted: #718096;
@@ -234,7 +234,7 @@ header {
     line-height: 1;
 }
 
-/* Distinct colour accents per card */
+/* Distinct color accents per card */
 #summary .summary-card:nth-child(1) .summary-value {
     color: var(--color-accent);
 }
