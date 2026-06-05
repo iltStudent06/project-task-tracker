@@ -106,43 +106,6 @@ npm run preview
 
 ---
 
-## TypeScript Design Decisions
-
-### Type Safety
-
-- `strict: true` enabled in `tsconfig.json` — no implicit `any`
-- All function parameters and return types are explicitly annotated
-- Array index access uses non-null assertions (`!`) only where the value is guaranteed
-
-### Custom Types (`src/types/task.ts`)
-
-| Type / Interface   | Purpose                                                      |
-| ------------------ | ------------------------------------------------------------ |
-| `Task`             | Core data model for a single task                            |
-| `AppState`         | Single source of truth for all application state             |
-| `FilterState`      | Active filter values (status, priority, search)              |
-| `SortState`        | Current sort column and direction                            |
-| `TaskSummary`      | Computed counts for the summary cards                        |
-| `ValidationResult` | Form validation output with per-field errors                 |
-| `Priority`         | Union type — `"High" \| "Medium" \| "Low"`                   |
-| `Status`           | Union type — `"Not started" \| "In progress" \| "Completed"` |
-
-### JavaScript Fundamentals Used
-
-| Feature            | Where                                                     |
-| ------------------ | --------------------------------------------------------- |
-| Arrow functions    | Throughout all utility and DOM files                      |
-| Closures           | `makeIdGenerator()` in `taskUtils.ts`                     |
-| Default parameters | `buildTask(values, id = generateId())`                    |
-| Destructuring      | `buildRowHTML`, `computeSummary`, `mergeTask`             |
-| Spread operator    | `sortTasks`, `mergeTask`, `main.ts` state init            |
-| Template literals  | `buildRowHTML`, `generateId`, `formatDisplayDate`         |
-| Optional chaining  | `taskTable.querySelector("thead")?` in `eventHandlers.ts` |
-| Nullish coalescing | `extractFormValues` in `taskUtils.ts`                     |
-| ES module imports  | Every file uses `import` / `export`                       |
-
----
-
 ## Usage Guide
 
 ### Adding a Task
