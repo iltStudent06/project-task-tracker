@@ -17,9 +17,7 @@ A responsive, fully client-side web application built with Vite and vanilla Type
 - **Status badges** — color-coded Not Started / In Progress / Completed
 - **Delete confirmation modal** — prevents accidental deletion
 - **Form validation** — required fields, max length, type guards
-- **Keyboard accessible** — Escape key closes any open modal
 - **Responsive design** — adapts to mobile, tablet, and desktop
-- **XSS protection** — all user input is HTML-escaped before rendering
 
 ---
 
